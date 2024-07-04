@@ -1,0 +1,16 @@
+{
+    "status": "Active",
+    "timestamp": "2020-10-16T11:34:31.508Z",
+    "applicationName": "sys-aldaredu-isams-api",
+    "dependencies": [
+        {
+            "name": "isams-system",
+            "code": "200",
+            "description": "ISAMS System Connectivity",
+            "status": "Inactive"
+        }
+    ],
+    "properties": {
+        "environment": "dev"
+    }
+}

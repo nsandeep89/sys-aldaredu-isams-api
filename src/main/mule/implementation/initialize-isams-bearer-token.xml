@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<sub-flow name="initialize-isams-bearer-token-subflow" doc:id="65c94310-5c6a-478d-9dac-a779e8953180" >
+		<os:retrieve doc:name="retrieveToken" doc:id="b6b6fa3a-0e7c-4681-9f57-58e36f5efb53" key="bearerToken" objectStore="Isams_Token_Object_store" target="bearerToken">
+			<os:default-value ><![CDATA[#[""]]]></os:default-value>
+		</os:retrieve>
+		<choice doc:name="Choice" doc:id="4676ab86-f824-4771-be03-886febed3858" >
+			<when expression="#[isEmpty(vars.bearerToken)]">
+				<flow-ref doc:name="getISAMSToken" doc:id="f8e47a56-69b2-4664-801d-e8572578bd76" name="get-isams-bearer-token-subflow"/>
+				<os:store doc:name="Store" doc:id="0ed0393a-3358-46dd-b481-603eb9432dc5" key="bearerToken" objectStore="Isams_Token_Object_store">
+					<os:value ><![CDATA[#[vars.bearerToken]]]></os:value>
+				</os:store>
+			</when>
+		</choice>
+	</sub-flow>
+</mule>

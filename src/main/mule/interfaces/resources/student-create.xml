@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+    <flow name="post:\api\sys\isams\v1\students:application\json:sys-aldaredu-isams-api-config">
+        <flow-ref doc:name="getISAMSToken" doc:id="70aeeb34-ceea-46e1-88d5-835ca33b5d5d" name="initialize-isams-bearer-token-subflow" />
+		<ee:transform doc:name="setHTTPVariables" doc:id="a5963ab5-195f-4fec-af18-f503230cc2ea" >
+			<ee:variables >
+				<ee:set-variable variableName="httpMethod" ><![CDATA["POST"]]></ee:set-variable>
+				<ee:set-variable variableName="path" ><![CDATA[Mule::p('isams.createstudents.path')]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="createStudentRequest" doc:id="b78b6eec-10ac-4b53-a515-142ace516f7e" name="request-isams-subflow"/>
+		<logger level="INFO" message="ISAMS Create Students Response #[payload]" />
+    </flow>
+	</mule>

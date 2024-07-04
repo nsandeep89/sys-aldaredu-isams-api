@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<sub-flow name="request-isams-subflow" doc:id="c6e9b2de-99a0-4fc8-9018-688ac34ca65d" >
+		<logger level="INFO" doc:name="Logger" doc:id="5e550336-8e59-44e4-b2ea-65b3964b15c7" message="Reqeust to ISAMS with method #[vars.httpMethod] queryPrams:: #[vars.queryParams] uriParams #[vars.uriParams] headers: #[vars.headers] path: #[vars.path] and payload is #[payload]"/>
+		<http:request method="#[vars.httpMethod]" doc:name="requestToISAMS" doc:id="f3c4cdf1-2c01-4f07-9cd7-417b4c19090d" config-ref="ISAMS_Request_configuration" path="#[vars.path]" sendCorrelationId="ALWAYS">
+			<http:headers ><![CDATA[#[vars.headers default {}]]]></http:headers>
+			<http:uri-params ><![CDATA[#[vars.uriParams default {}]]]></http:uri-params>
+			<http:query-params ><![CDATA[#[vars.queryParams default {}]]]></http:query-params>
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="970d325b-eb18-4632-b0a3-f3c9cbf2b7a9" message="Response received from ISAMS is #[payload]"/>
+	</sub-flow>
+</mule>

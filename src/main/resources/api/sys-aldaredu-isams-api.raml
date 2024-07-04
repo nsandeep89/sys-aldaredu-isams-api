@@ -1,0 +1,112 @@
+#%RAML 1.0
+title: sys-aldaredu-isams-api
+
+#-------------------------------------------------------
+#Created Details
+#CreatedBy:  Sandeep Nangunuri
+#Date:  01-07-2024
+#-------------------------------------------------------
+description: The System API is connected to ISAMS System
+version: v1
+protocols: [ HTTPS ]
+mediaType: [ application/json ]
+
+
+/api/sys/isams/v1:
+ /ping:
+  get:
+   responses:
+    200:
+     body:
+      application/json:
+        type: !include /datatypes/health-check.raml
+        example: !include /examples/health-check-active-response.json
+    500:
+     body:
+      application/json:
+        type: !include /datatypes/health-check.raml
+        example: !include /examples/health-check-inactive-response.json   
+
+  /dependencies:
+   get:
+    responses:
+     200:
+      body:
+       application/json:
+        example: !include /examples/dependencies-active-status-health-check-response.json
+     500:
+      body:
+       application/json:
+        example: !include /examples/dependencies-inactive-status-health-check-response.json
+        
+ /students:
+    post:
+      body:
+       application/json:
+         type: object
+         example: !include /examples/create-student-request.json
+      responses:
+        201:
+         body:
+        422:
+         body:
+        500:
+          body:
+          
+    /{schoolId}:
+      put:
+       body:
+        appliction/json:
+          type: object
+          example: !include /examples/update-student-request.json
+       responses:
+         200:
+          body:       
+         400:
+          body:
+         404:
+          body:         
+         500:
+          body:
+         422:
+          body:
+      
+      /customFields:
+        description: request to update custom fields of student in isams
+        patch:
+         body:
+          application/json:
+           type: array
+           example: !include /examples/update-student-customfields-request.json
+         responses:
+          200:
+           body:
+                     
+      /tempcontacts:
+        description: create a student contact
+        post:
+         body:
+          application/json:
+           type: object
+           example: !include /examples/create-student-contact-request.json
+         responses:
+           201:
+            body:
+           422:
+            body:
+            
+        /{contactId}:
+         description: update a student contact for an contactId
+         put:
+          body:
+           application/json:
+            type: object
+            example: !include /examples/update-student-contact-response.json
+          responses:
+           201:
+            body:
+           404:
+            body:
+           409:
+            body:
+      

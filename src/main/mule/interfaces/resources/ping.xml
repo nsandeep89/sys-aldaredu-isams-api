@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="get:\api\sys\isams\v1\ping:sys-aldaredu-isams-api-config" doc:id="12f9a901-5b01-4894-8657-3ae5b6678544" >
+		<ee:transform doc:name="setPingResponse" doc:id="e44b6838-247e-45dd-9f4d-0268cc693846" >
+			<ee:message >
+				<ee:set-payload resource="dwl/msg-ping-response.dwl" />
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+	</flow>
+	<flow name="get:\api\sys\isams\v1\ping\dependencies:sys-aldaredu-isams-api-config" doc:id="58468bcf-459a-4d26-9602-6d31c96c437d" >
+		<flow-ref doc:name="getISAMSToken" doc:id="9154c31c-f894-4d9c-aa89-0c2c43d1c1cc" name="initialize-isams-bearer-token-subflow" />
+		<try doc:name="Try" doc:id="e8152f59-7cbc-4a78-aa19-bc0c076cb72c" >
+			<http:request method="GET" doc:name="Request" doc:id="56ce844a-bdc8-4c86-b6a1-0877c5d90ccc" config-ref="ISAMS_Request_configuration" path="${isams.get.students}" sendCorrelationId="ALWAYS" />
+			<ee:transform doc:name="Transform Message" doc:id="b5b7070e-09b9-4f7f-be61-e23dc480d5c1">
+			<ee:message>
+					<ee:set-payload resource="dwl/msg-ping-dependencies-response.dwl" />
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="httpStatus"><![CDATA[200]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="49fb72f3-6427-472b-b129-671215de2992" >
+					<ee:transform doc:name="Transform Message" doc:id="457b1b6f-b504-4249-b8a9-e4d69a6ddcdb" >
+						<ee:message >
+							<ee:set-payload resource="dwl/msg-ping-dependencies-inactive-response.dwl" />
+						</ee:message>
+						<ee:variables >
+							<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+				</on-error-continue>
+			</error-handler>
+		</try>
+	</flow>	
+	</mule>

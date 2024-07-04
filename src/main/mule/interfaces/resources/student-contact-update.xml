@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+    <flow name="put:\api\sys\isams\v1\students\(schoolId)\tempcontacts\(contactId):application\json:sys-aldaredu-isams-api-config">
+        <set-variable value="#[attributes.uriParams.schoolId]" doc:name="schoolId" doc:id="8a3d80ca-c9bb-4c67-8f00-2252cbc82ee7" variableName="schoolId" />
+		<set-variable value="#[attributes.uriParams.contactId]" doc:name="contactId" doc:id="e0ffe9e2-367d-4eb7-b36b-8a39a0a88ca3" variableName="contactId" />
+		<flow-ref doc:name="getISAMSToken" doc:id="87485976-51a8-43ff-959f-e4afab0b4bc4" name="initialize-isams-bearer-token-subflow" />
+		<ee:transform doc:name="setHTTPVariables" doc:id="1d739b03-7473-4a8d-ac18-72fb80e38ae7" >
+			<ee:variables >
+				<ee:set-variable variableName="httpMethod" ><![CDATA["PUT"]]></ee:set-variable>
+				<ee:set-variable variableName="path" ><![CDATA[Mule::p('isams.updatestudentcontact.path')]]></ee:set-variable>
+				<ee:set-variable variableName="uriParams" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"schoolId": vars.schoolId,
+	"contactId": vars.contactId
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="updateStudentContactRequest" doc:id="bfb3b83c-2a71-4408-880f-ec640c3bc93a" name="request-isams-subflow"/>
+		<logger level="INFO" message="ISAMS Update Students Contact Response for schoolId #[vars.schoolId] and contactId #[vars.contactId] is #[payload]" />
+    </flow>	
+	</mule>

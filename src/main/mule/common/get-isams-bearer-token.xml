@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<sub-flow name="get-isams-bearer-token-subflow" doc:id="56d34a69-31d3-4f97-8443-80e836c0f72f" >
+		<logger level="INFO" doc:name="Logger" doc:id="422880d8-2ff8-40f0-9e63-a44fbd1d81a4" message="Get ISAMS bearer token"/>
+		<ee:transform doc:name="tokenRequestPayload" doc:id="7cf42959-0168-4b5a-8486-ebd0c208bb18" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable resource="dwl/var-token-request.dwl" variableName="tokenPayload" />
+			</ee:variables>
+		</ee:transform>
+		<http:request method="POST" doc:name="getBearerToken" doc:id="091d0119-e3c4-4d6b-a510-7be332479fb7" config-ref="ISAMS_Token_Request_configuration" path="${isams.token.path}" sendCorrelationId="ALWAYS" target="tokenResponse">
+			<http:body ><![CDATA[#[vars.tokenPayload]]]></http:body>
+		</http:request>
+		<logger level="DEBUG" doc:name="Logger" doc:id="b2921bb7-75c3-4e3e-a687-7d9831023489" message="Get ISAMS Token respnose #[vars.tokenResponse]"/>
+		<ee:transform doc:name="setBearerToken" doc:id="9f311a3d-554e-4da1-a2b3-39c268a27bf5" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable resource="dwl/var-bearer-token.dwl" variableName="bearerToken" />
+			</ee:variables>
+		</ee:transform>
+	</sub-flow>
+</mule>

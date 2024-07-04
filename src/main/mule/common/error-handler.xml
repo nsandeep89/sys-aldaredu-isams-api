@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<error-handler name="error-handlerError_Handler" doc:id="0a407c7a-601b-4252-af54-d5cf3c21db1e" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="49bb33a1-d49e-4ece-9bee-3778704af389" type="HTTP:CLIENT_SECURITY, HTTP:BAD_GATEWAY, HTTP:CONNECTIVITY,HTTP:FORBIDDEN, HTTP:INTERNAL_SERVER_ERROR, HTTP:METHOD_NOT_ALLOWED, HTTP:NOT_ACCEPTABLE, HTTP:NOT_FOUND, HTTP:RETRY_EXHAUSTED, HTTP:SECURITY, HTTP:SERVICE_UNAVAILABLE, HTTP:TIMEOUT, HTTP:TOO_MANY_REQUESTS, HTTP:UNAUTHORIZED,HTTP:GATEWAY_TIMEOUT,HTTP:UNSUPPORTED_MEDIA_TYPE">
+			<ee:transform doc:name="initializeErrorVars" doc:id="0c86bfbe-251d-4639-a816-ed99a7f07224">
+				<ee:variables>
+					<ee:set-variable variableName="failureType"><![CDATA["SYSTEM"]]></ee:set-variable>
+					<ee:set-variable variableName="eventType"><![CDATA["ERROR"]]></ee:set-variable>
+					<ee:set-variable resource="dwl/var-system-error-httpstatus.dwl" variableName="httpStatus" />
+				</ee:variables>
+			</ee:transform>
+			<ee:transform doc:name="setErrorResponse" doc:id="ffcadd1f-ec2d-456b-a42f-828f910bbae9">
+				<ee:message>
+					<ee:set-payload resource="dwl/msg-error-response.dwl" />
+				</ee:message>
+			</ee:transform>
+			<logger level="INFO" doc:name="Logger" doc:id="8e42210b-7a68-49d3-940e-760484168986" message="Error Response is #[payload]" />
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="45e546be-caeb-428f-979d-36aa8ea78b69" >
+			<ee:transform doc:name="initializeErrorVars" doc:id="3b82ab1a-4ac6-438b-b103-2134f675f4a3" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="failureType" ><![CDATA["DATA"]]></ee:set-variable>
+					<ee:set-variable variableName="eventType" ><![CDATA["ERROR"]]></ee:set-variable>
+					<ee:set-variable resource="dwl/var-data-error-httpstatus.dwl" variableName="httpStatus" />
+				</ee:variables>
+			</ee:transform>
+			<ee:transform doc:name="setErrorResponse" doc:id="9f5622a6-6ce9-407f-a5b5-ea43484fb2d2" >
+				<ee:message >
+					<ee:set-payload resource="dwl/msg-error-response.dwl" />
+				</ee:message>
+			</ee:transform>
+			<logger level="INFO" doc:name="Logger" doc:id="814de005-a1dd-441c-a2e0-0371f347fcb4" message="Error Response is #[payload]" />
+		</on-error-propagate>
+	</error-handler>
+</mule>

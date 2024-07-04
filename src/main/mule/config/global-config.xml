@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd">
+	<http:request-config name="ISAMS_Request_configuration" doc:name="HTTP Request configuration" doc:id="ff0a0cde-1a3b-415f-9d47-474069fc9c6d" basePath="${isams.basepath}" responseTimeout="${isams.response.timeout}">
+		<http:request-connection protocol="HTTPS" host="${isams.host}" port="${isams.port}" >
+			<reconnection >
+				<reconnect frequency="${reconn.freq}" count="${reconn.attempts}" />
+			</reconnection>
+		</http:request-connection>
+		<http:default-headers >
+			<http:default-header key="Authorization" value='#["Bearer " ++ vars.bearerToken]' />
+		</http:default-headers>
+	</http:request-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="dbcf12a9-d9b1-4616-8bd0-02cd68d2005f" file="properties/common.properties" />
+	<configuration-properties doc:name="Configuration properties" doc:id="0b8008a3-9896-41eb-9c36-2133c3f75af0" file="properties/aldaredu-${env}.properties" />
+	<http:request-config name="ISAMS_Token_Request_configuration" doc:name="HTTP Request configuration" doc:id="3cf8fc5d-ba4a-464d-bfe5-294e5bb2d6b2" responseTimeout="${isams.response.timeout}" >
+		<http:request-connection protocol="HTTPS" host="${isams.host}" port="${isams.port}" >
+			<reconnection >
+				<reconnect frequency="${reconn.freq}" count="${reconn.attempts}" />
+			</reconnection>
+		</http:request-connection>
+	</http:request-config>
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="f4692819-efc2-4a6e-8aa9-d75c0d76c10a" file="properties/secure/aldaredu-${env}-secure.properties" key="${key}" >
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+	<os:config name="ObjectStore_Config" doc:name="ObjectStore Config" doc:id="3594403e-4811-4105-956d-75bf476b1c1e" >
+		<os:connection >
+			<reconnection >
+				<reconnect frequency="${reconn.freq}" count="${reconn.attempts}" />
+			</reconnection>
+		</os:connection>
+	</os:config>
+	<os:object-store name="Isams_Token_Object_store" doc:name="Object store" doc:id="146961e5-7955-4fa7-b148-2e50648e8ace" persistent="false" maxEntries="${os.max.entries}" entryTtl="${os.max.entry.ttl}" entryTtlUnit="MINUTES" expirationInterval="${os.exp.interval}" config-ref="ObjectStore_Config" />
+    <http:listener-config name="httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="${http.listener.port}" >
+			<reconnection failsDeployment="true" >
+				<reconnect frequency="${reconn.freq}" count="${reconn.attempts}" />
+			</reconnection>
+		</http:listener-connection>
+    </http:listener-config>
+    <apikit:config name="sys-aldaredu-isams-api-config" api="sys-aldaredu-isams-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<configuration doc:name="Configuration" doc:id="389b00b3-12c4-4229-8b1c-e1d0904cb2b3" defaultErrorHandler-ref="error-handlerError_Handler" />
+</mule>

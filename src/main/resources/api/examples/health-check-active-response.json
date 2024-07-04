@@ -1,0 +1,8 @@
+{
+  "appName": "sys-aldaredu-isams-api",
+  "appVersion": "v1",
+  "mule_env": "dev",
+  "mule_server": "4.4.0",
+  "status": "200",
+  "message": "active" 
+}
